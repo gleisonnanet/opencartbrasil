@@ -64,7 +64,7 @@ RUN { \
 RUN set -aux; \
     { \
         echo "<VirtualHost *:80>"; \
-        echo "    ServerAdmin webmaster@localhost"; \
+        echo "    ServerAdmin gleisonnanet@gmail.com"; \
         echo "    DocumentRoot /var/www/html"; \
         echo ""; \
         echo "    ErrorLog /dev/stderr"; \
@@ -76,18 +76,21 @@ RUN set -aux; \
         mv .htaccess.txt .htaccess; \
     fi; \
     \
-    a2enmod rewrite;
+    a2enmod rewrite;\
+    a2enmod headers;
+
+RUN service apache2 restart
 
 EXPOSE 80
 
 WORKDIR /var/www/html
 
-COPY ../www  .
+COPY .  .
 
 VOLUME /var/www/html
 
-COPY ./scripts/docker-entrypoint.sh /
+# COPY ./docker-entrypoint.sh  .
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# ENTRYPOINT ["/docker-entrypoint.sh"]
 
 CMD ["apache2-foreground"]

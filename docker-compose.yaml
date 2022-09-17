@@ -12,24 +12,24 @@ services:
             - .env
         container_name: opencartbrasil
         build:
-          context: .docker
+          context: ./www
           dockerfile: Dockerfile
           args:
             VERSION: "1.x"
         ports:
-            - 81:80
+            - ${HTTP_PORT}:80
         environment:
             - DB_HOSTNAME=ocbr_db
-            - DB_USERNAME=store
-            - DB_PASSWORD=store
+            - DB_USERNAME=${DB_USERNAME:?}
+            - DB_PASSWORD=${DB_PASSWORD:?}
             - DB_DATABASE=opencartbrasil
-            - USERNAME=admin
-            - PASSWORD=admin
-            - HTTP_SERVER=http://localhost:81/
+            - USERNAME=${OPENCART_USER:?}
+            - PASSWORD=${OPENCART_PASSWORD:?}
+            - HTTP_SERVER=${URL:?}
         networks:
             - ocbr_network
         volumes:
-            - ./:/var/www/html
+            - ./www:/var/www/html
         depends_on:
             - ocbr_db
 
@@ -39,16 +39,15 @@ services:
         image: mysql:5.7
         container_name: opencartbrasil_db
         environment:
-            - MYSQL_RANDOM_ROOT_PASSWORD=yes
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_USER=store
-            - MYSQL_PASSWORD=store
-            - MYSQL_DATABASE=opencartbrasil
-            - MYSQL_TCP_PORT=3307
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?}
+            - MYSQL_USER=${DB_USERNAME:?}
+            - MYSQL_PASSWORD=${DB_PASSWORD:?}
+            - MYSQL_DATABASE=${MYSQL_DATABASE:?}
+            - MYSQL_TCP_PORT=${DB_PORT:?}
         ports:
-            - 3307:3307
+            - ${DB_PORT}:3306
         expose:
-            - 3307
+            - 3306
         networks:
             - ocbr_network
         volumes:
