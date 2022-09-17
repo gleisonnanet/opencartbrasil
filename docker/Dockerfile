@@ -82,7 +82,7 @@ EXPOSE 80
 
 WORKDIR /var/www/html
 
-COPY ./ .
+COPY ../www  .
 
 VOLUME /var/www/html
 

@@ -8,6 +8,8 @@ networks:
 
 services:
     ocbr:
+        env_file:
+            - .env
         container_name: opencartbrasil
         build:
           context: .docker
@@ -15,7 +17,7 @@ services:
           args:
             VERSION: "1.x"
         ports:
-            - 8080:80
+            - 81:80
         environment:
             - DB_HOSTNAME=ocbr_db
             - DB_USERNAME=store
@@ -23,7 +25,7 @@ services:
             - DB_DATABASE=opencartbrasil
             - USERNAME=admin
             - PASSWORD=admin
-            - HTTP_SERVER=http://localhost:8080/
+            - HTTP_SERVER=http://localhost:81/
         networks:
             - ocbr_network
         volumes:
@@ -32,13 +34,21 @@ services:
             - ocbr_db
 
     ocbr_db:
+        env_file:
+            - .env
         image: mysql:5.7
         container_name: opencartbrasil_db
         environment:
             - MYSQL_RANDOM_ROOT_PASSWORD=yes
+            - MYSQL_ROOT_PASSWORD=root
             - MYSQL_USER=store
             - MYSQL_PASSWORD=store
             - MYSQL_DATABASE=opencartbrasil
+            - MYSQL_TCP_PORT=3307
+        ports:
+            - 3307:3307
+        expose:
+            - 3307
         networks:
             - ocbr_network
         volumes:
